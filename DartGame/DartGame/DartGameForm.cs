@@ -1,3 +1,9 @@
+/* AbelDoyle
+ * RCET 3371
+ * Fall Semester 2026
+ * DartGame
+*/ https://github.com/abeldoyl/RECT-3371-Assignments/tree/main/DartGame
+
 namespace DartGame
 {
     public partial class DartGameForm : Form

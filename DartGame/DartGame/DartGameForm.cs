@@ -29,7 +29,7 @@ namespace DartGame
             // Spacebar throws a dart, so prevent focused buttons from receiving Spacebar
             this.KeyDown += DartGameForm_KeyDown;
             DartboardPictureBox.Paint += DrawPictureBox_Paint;
-           
+            ReviewListBox.SelectedIndexChanged += ReviewListBox_SelectedIndexChanged;
         }
 
         // Methods Below Here ------------------------------------------------------------
@@ -150,6 +150,56 @@ namespace DartGame
             }
         }
 
+        // Loads all saved rounds from the log file into the ListBox
+        void LoadRounds()
+        {
+            savedRounds.Clear();
+            ReviewListBox.Items.Clear();
+
+            try
+            {
+                if (!File.Exists(logFile))
+                {
+                    File.WriteAllText(logFile, "");
+                }
+
+                string[] lines = File.ReadAllLines(logFile);
+                List<int> roundNumbers = new List<int>();
+
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split(',');
+
+                    if (parts.Length == 7)
+                    {
+                        int[] numbers = new int[7];
+                        bool valid = true;
+
+                        for (int i = 0; i < 7; i++)
+                        {
+                            if (!int.TryParse(parts[i], out numbers[i]) || numbers[i] < 0)
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        int roundNum = numbers[0];
+                        if (valid && roundNum != 0 && !roundNumbers.Contains(roundNum))
+                        {
+                            roundNumbers.Add(roundNum);
+                            savedRounds.Add(line);
+                            ReviewListBox.Items.Add($"Round {roundNum}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading rounds: " + ex.Message);
+            }
+        }
+
         // Saves the current round to the log file
         void SaveRound()
         {
@@ -165,6 +215,93 @@ namespace DartGame
                 roundData += $",{dartPositions[i].X},{dartPositions[i].Y}";
             }
 
+            try
+            {
+                // Check that the round number has not been saved
+                if (roundNumber < GetNextRound())
+                {
+                    MessageBox.Show("This round is already saved.");
+                    roundStarted = false;
+                    return;
+                }
+
+                File.AppendAllText(logFile, roundData + Environment.NewLine);
+
+                roundStarted = false;
+
+                MessageBox.Show($"Round {roundNumber} saved. Start a new round to keep playing.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving round: " + ex.Message +
+                    "\nPress Spacebar to try saving again.");
+            }
+        }
+
+        // Returns the next round number based on the log file
+        int GetNextRound()
+        {
+            int lastRound = 0;
+
+            if (!File.Exists(logFile))
+            {
+                File.WriteAllText(logFile, "");
+            }
+
+            string[] lines = File.ReadAllLines(logFile);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+
+                if (parts.Length == 7)
+                {
+                    int savedNumber;
+
+                    if (int.TryParse(parts[0], out savedNumber))
+                    {
+                        if (savedNumber > lastRound)
+                        {
+                            lastRound = savedNumber;
+                        }
+                    }
+                }
+            }
+
+            return lastRound + 1;
+        }
+
+        // Puts everything into Play mode and clears the PictureBox
+        void SetPlayMode()
+        {
+            reviewMode = false;
+            roundStarted = false;
+            throwCount = 0;
+
+            ReviewListBox.Visible = false;
+            ModeLabel.Text = "Mode: Play";
+            ReviewButton.Text = "&Review";
+            RoundNumberLabel.Text = "Round: #";
+            DartCountLabel.Text = "Darts Thrown: 0 / 3";
+
+            DartboardPictureBox.Invalidate();
+        }
+
+        // Puts everything into Review mode and clears the PictureBox
+        void SetReviewMode()
+        {
+            reviewMode = true;
+            roundStarted = false;
+            throwCount = 0;
+
+            ReviewListBox.Visible = true;
+            ModeLabel.Text = "Mode: Review";
+            ReviewButton.Text = "&Play";
+            RoundNumberLabel.Text = "Round: #";
+            DartCountLabel.Text = "Darts Thrown: 0 / 3";
+
+            LoadRounds();
+            DartboardPictureBox.Invalidate();
         }
 
 
@@ -174,7 +311,103 @@ namespace DartGame
             this.Close();
         }
 
-        
-        
+        private void StartRoundButton_Click(object sender, EventArgs e)
+        {
+            // Leave Review mode first so the two modes never mix
+            if (reviewMode)
+            {
+                SetPlayMode();
+            }
+
+            if (!roundStarted)
+            {
+                try
+                {
+                    roundNumber = GetNextRound();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error occurred while starting the round: " + ex.Message);
+                    return;
+                }
+
+                throwCount = 0;
+                roundStarted = true;
+
+                RoundNumberLabel.Text = $"Round #{roundNumber}";
+                DartCountLabel.Text = $"Darts Thrown: {throwCount} / 3";
+                ModeLabel.Text = "Mode: Play";
+
+                // Clears the old darts
+                DartboardPictureBox.Invalidate();
+
+                // Prevent focused buttons from receiving Spacebar
+                this.ActiveControl = null;
+            }
+            else
+            {
+                MessageBox.Show("Finish the current round first.");
+            }
+        }
+
+        private void ReviewButton_Click(object sender, EventArgs e)
+        {
+            if (roundStarted)
+            {
+                DialogResult result = MessageBox.Show(
+                    "Discard the current round?",
+                    "Confirm",
+                    MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
+            if (reviewMode)
+            {
+                SetPlayMode();
+            }
+            else
+            {
+                SetReviewMode();
+            }
+        }
+
+        private void ReviewListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!reviewMode || ReviewListBox.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            try
+            {
+                string roundData = savedRounds[ReviewListBox.SelectedIndex];
+                string[] parts = roundData.Split(',');
+
+                roundNumber = int.Parse(parts[0]);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    int x = int.Parse(parts[i * 2 + 1]);
+                    int y = int.Parse(parts[i * 2 + 2]);
+
+                    dartPositions[i] = new Point(x, y);
+                }
+
+                throwCount = 3;
+
+                RoundNumberLabel.Text = $"Round #{roundNumber}";
+                DartCountLabel.Text = $"Darts Thrown: {throwCount} / 3";
+
+                DartboardPictureBox.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not show that round: " + ex.Message);
+            }
+        }
     }
 }

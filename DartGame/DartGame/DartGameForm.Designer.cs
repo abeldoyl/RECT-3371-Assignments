@@ -44,7 +44,7 @@
             DartboardPictureBox.BackColor = SystemColors.Control;
             DartboardPictureBox.Location = new Point(12, 20);
             DartboardPictureBox.Name = "DartboardPictureBox";
-            DartboardPictureBox.Size = new Size(400, 400);
+            DartboardPictureBox.Size = new Size(375, 375);
             DartboardPictureBox.TabIndex = 0;
             DartboardPictureBox.TabStop = false;
             // 

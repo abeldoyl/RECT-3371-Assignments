@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EtchOSketch")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+74f6b4d5a65dab753bb09441fad4fd5c6e2fe12a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+78ed4c20b2a5ca2bf16d9d630f45d9c269afa428")]
 [assembly: System.Reflection.AssemblyProductAttribute("EtchOSketch")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EtchOSketch")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

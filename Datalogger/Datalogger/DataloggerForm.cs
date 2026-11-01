@@ -1,3 +1,4 @@
+using System.IO.Ports;
 namespace Datalogger
 {
     public partial class DataloggerForm : Form
@@ -5,6 +6,21 @@ namespace Datalogger
         public DataloggerForm()
         {
             InitializeComponent();
+
+            this.Text = "PIC Data Logger";
+            StartButton.Enabled = true;
+            StopButton.Enabled = false;
+        }
+
+        SerialPort picserialPort = new SerialPort();
+        void SerialPortSetup(string portname)
+        {
+            picserialPort.Close();
+            picserialPort.PortName = portname;
+            picserialPort.BaudRate = 9600;
+            picserialPort.Parity = Parity.None;
+            picserialPort.DataBits = 8;
+            picserialPort.StopBits = StopBits.None;
         }
 
         private void TenMinRadioButton_CheckedChanged(object sender, EventArgs e)

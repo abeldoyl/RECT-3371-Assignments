@@ -1,3 +1,9 @@
+/* Abel Doyle
+ * RCET 3371
+ * Fall Semester 2026
+ * Datalogger
+ * https://github.com/abeldoyl/RECT-3371-Assignments/tree/main/Datalogger
+ */
 using System.Globalization;
 using System.IO.Ports;
 

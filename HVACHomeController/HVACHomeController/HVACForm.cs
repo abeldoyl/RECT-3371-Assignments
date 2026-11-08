@@ -24,6 +24,7 @@ namespace HVACHomeController
         private readonly Color RoarangeL = Color.FromArgb(246, 146, 64);
         private readonly Color BengalBlack = Color.FromArgb(0, 0, 0);
 
+
         
 
         // =====================================================================
@@ -53,16 +54,41 @@ namespace HVACHomeController
             _serialPort.Write(data, 0, data.Length);
         }
 
-     
-
         string[] GetSerialPorts()
         {
             return SerialPort.GetPortNames();
         }
 
+        // Checks one port for a QY@ board. Uses its own SerialPort so it can run
+        // on a background thread while the main port stays untouched.
+        bool IsQyAtBoard(string portName)
+        {
+            try
+            {
+                using SerialPort sp = new(portName, 9600, Parity.None, 8, StopBits.One)
+                {
+                    ReadTimeout = 300,
+                    WriteTimeout = 300
+                };
+                sp.Open();
+                sp.DiscardInBuffer();                          // flush rx buffer
+                sp.Write(new byte[] { CmdIdentify }, 0, 1);    // request settings
+                Thread.Sleep(100);                             // wait for reply
 
-      
+                byte[] input = new byte[sp.BytesToRead];
+                sp.Read(input, 0, input.Length);
+                sp.Close();
+
+                // reply is 64 bytes with "Qy@" at bytes 58-60
+                return input.Length == 64 && input[58] == 81 && input[59] == 121 && input[60] == 64;
+            }
+            catch (Exception)
+            {
+                return false;   // busy, missing or not a QY@ board
+            }
         }
+
+
 
         // Event Handlers Below here ******************************************
         private void HVACForm_Load(object? sender, EventArgs e)

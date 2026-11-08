@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             TempUpButton = new Button();
             TempDownButton = new Button();
             TempLabel = new Label();
             TempDisplayGroupBox = new GroupBox();
-            CoolToLabel = new Label();
             HeatToLabel = new Label();
+            CoolToLabel = new Label();
             PortsComboBox = new ComboBox();
             ExitButton = new Button();
             DisconnectButton = new Button();
@@ -56,10 +57,7 @@
             HeatStatusLabel = new Label();
             CoolStatusLabel = new Label();
             SimulationGroupBox = new GroupBox();
-            SimulatedTempLabel = new Label();
-            UnitTempNumericUpDown = new NumericUpDown();
             SimulationCheckBox = new CheckBox();
-            RoomTempNumericUpDown = new NumericUpDown();
             SafetyCheckBox = new CheckBox();
             HeatingCheckBox = new CheckBox();
             FanOnlyCheckBox = new CheckBox();
@@ -74,12 +72,14 @@
             PortsStripComboBox = new ToolStripComboBox();
             ConnectMenuItem = new ToolStripMenuItem();
             DisconnectMenuItem = new ToolStripMenuItem();
+            SetupCoolingRadioButton = new RadioButton();
+            SetupHeatingRadioButton = new RadioButton();
+            HVACTimer = new System.Windows.Forms.Timer(components);
+            CommunicationTimer = new System.Windows.Forms.Timer(components);
             TempDisplayGroupBox.SuspendLayout();
             ControlGroupBox.SuspendLayout();
             OperatingModeGroupBox.SuspendLayout();
             SimulationGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)UnitTempNumericUpDown).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)RoomTempNumericUpDown).BeginInit();
             MainMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -109,7 +109,7 @@
             // 
             TempLabel.AutoSize = true;
             TempLabel.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            TempLabel.Location = new Point(81, 19);
+            TempLabel.Location = new Point(47, 19);
             TempLabel.Name = "TempLabel";
             TempLabel.Size = new Size(81, 86);
             TempLabel.TabIndex = 2;
@@ -127,16 +127,6 @@
             TempDisplayGroupBox.TabStop = false;
             TempDisplayGroupBox.Text = "Room Temperature";
             // 
-            // CoolToLabel
-            // 
-            CoolToLabel.AutoSize = true;
-            CoolToLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            CoolToLabel.Location = new Point(6, 125);
-            CoolToLabel.Name = "CoolToLabel";
-            CoolToLabel.Size = new Size(82, 21);
-            CoolToLabel.TabIndex = 3;
-            CoolToLabel.Text = "Cool To `°";
-            // 
             // HeatToLabel
             // 
             HeatToLabel.AutoSize = true;
@@ -146,6 +136,16 @@
             HeatToLabel.Size = new Size(83, 21);
             HeatToLabel.TabIndex = 4;
             HeatToLabel.Text = "Heat To `°";
+            // 
+            // CoolToLabel
+            // 
+            CoolToLabel.AutoSize = true;
+            CoolToLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            CoolToLabel.Location = new Point(6, 125);
+            CoolToLabel.Name = "CoolToLabel";
+            CoolToLabel.Size = new Size(82, 21);
+            CoolToLabel.TabIndex = 3;
+            CoolToLabel.Text = "Cool To `°";
             // 
             // PortsComboBox
             // 
@@ -165,6 +165,7 @@
             ExitButton.TabIndex = 44;
             ExitButton.Text = "Exit";
             ExitButton.UseVisualStyleBackColor = true;
+            ExitButton.Click += ExitButton_Click;
             // 
             // DisconnectButton
             // 
@@ -175,6 +176,7 @@
             DisconnectButton.TabIndex = 43;
             DisconnectButton.Text = "Disconnect";
             DisconnectButton.UseVisualStyleBackColor = true;
+            DisconnectButton.Click += DisconnectButton_Click;
             // 
             // ConnectButton
             // 
@@ -185,6 +187,7 @@
             ConnectButton.TabIndex = 42;
             ConnectButton.Text = "Connect";
             ConnectButton.UseVisualStyleBackColor = true;
+            ConnectButton.Click += ConnectButton_Click;
             // 
             // MaintenanceLabel
             // 
@@ -234,7 +237,7 @@
             // ClockLabel
             // 
             ClockLabel.AutoSize = true;
-            ClockLabel.Location = new Point(225, 20);
+            ClockLabel.Location = new Point(205, 19);
             ClockLabel.Name = "ClockLabel";
             ClockLabel.Size = new Size(34, 15);
             ClockLabel.TabIndex = 36;
@@ -373,10 +376,7 @@
             // 
             // SimulationGroupBox
             // 
-            SimulationGroupBox.Controls.Add(SimulatedTempLabel);
-            SimulationGroupBox.Controls.Add(UnitTempNumericUpDown);
             SimulationGroupBox.Controls.Add(SimulationCheckBox);
-            SimulationGroupBox.Controls.Add(RoomTempNumericUpDown);
             SimulationGroupBox.Controls.Add(SafetyCheckBox);
             SimulationGroupBox.Controls.Add(HeatingCheckBox);
             SimulationGroupBox.Controls.Add(FanOnlyCheckBox);
@@ -391,27 +391,6 @@
             SimulationGroupBox.TabStop = false;
             SimulationGroupBox.Text = "Simulation Check Boxes";
             // 
-            // SimulatedTempLabel
-            // 
-            SimulatedTempLabel.AutoSize = true;
-            SimulatedTempLabel.Location = new Point(15, 149);
-            SimulatedTempLabel.Name = "SimulatedTempLabel";
-            SimulatedTempLabel.Size = new Size(165, 15);
-            SimulatedTempLabel.TabIndex = 39;
-            SimulatedTempLabel.Text = "Simulated Room Temperature";
-            // 
-            // UnitTempNumericUpDown
-            // 
-            UnitTempNumericUpDown.DecimalPlaces = 1;
-            UnitTempNumericUpDown.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
-            UnitTempNumericUpDown.Location = new Point(15, 194);
-            UnitTempNumericUpDown.Margin = new Padding(3, 2, 3, 2);
-            UnitTempNumericUpDown.Minimum = new decimal(new int[] { 40, 0, 0, 0 });
-            UnitTempNumericUpDown.Name = "UnitTempNumericUpDown";
-            UnitTempNumericUpDown.Size = new Size(182, 23);
-            UnitTempNumericUpDown.TabIndex = 38;
-            UnitTempNumericUpDown.Value = new decimal(new int[] { 80, 0, 0, 0 });
-            // 
             // SimulationCheckBox
             // 
             SimulationCheckBox.AutoSize = true;
@@ -422,18 +401,6 @@
             SimulationCheckBox.TabIndex = 26;
             SimulationCheckBox.Text = "Simulation Mode";
             SimulationCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // RoomTempNumericUpDown
-            // 
-            RoomTempNumericUpDown.DecimalPlaces = 1;
-            RoomTempNumericUpDown.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
-            RoomTempNumericUpDown.Location = new Point(15, 167);
-            RoomTempNumericUpDown.Margin = new Padding(3, 2, 3, 2);
-            RoomTempNumericUpDown.Minimum = new decimal(new int[] { 40, 0, 0, 0 });
-            RoomTempNumericUpDown.Name = "RoomTempNumericUpDown";
-            RoomTempNumericUpDown.Size = new Size(182, 23);
-            RoomTempNumericUpDown.TabIndex = 37;
-            RoomTempNumericUpDown.Value = new decimal(new int[] { 70, 0, 0, 0 });
             // 
             // SafetyCheckBox
             // 
@@ -551,12 +518,36 @@
             DisconnectMenuItem.Size = new Size(181, 22);
             DisconnectMenuItem.Text = "Disconnect";
             // 
+            // SetupCoolingRadioButton
+            // 
+            SetupCoolingRadioButton.AutoSize = true;
+            SetupCoolingRadioButton.Location = new Point(12, 166);
+            SetupCoolingRadioButton.Name = "SetupCoolingRadioButton";
+            SetupCoolingRadioButton.Size = new Size(100, 19);
+            SetupCoolingRadioButton.TabIndex = 50;
+            SetupCoolingRadioButton.TabStop = true;
+            SetupCoolingRadioButton.Text = "Setup Cooling";
+            SetupCoolingRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // SetupHeatingRadioButton
+            // 
+            SetupHeatingRadioButton.AutoSize = true;
+            SetupHeatingRadioButton.Location = new Point(11, 188);
+            SetupHeatingRadioButton.Name = "SetupHeatingRadioButton";
+            SetupHeatingRadioButton.Size = new Size(100, 19);
+            SetupHeatingRadioButton.TabIndex = 51;
+            SetupHeatingRadioButton.TabStop = true;
+            SetupHeatingRadioButton.Text = "Setup Heating";
+            SetupHeatingRadioButton.UseVisualStyleBackColor = true;
+            // 
             // HVACForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(230, 231, 232);
             ClientSize = new Size(800, 383);
+            Controls.Add(SetupHeatingRadioButton);
+            Controls.Add(SetupCoolingRadioButton);
             Controls.Add(OperatingModeGroupBox);
             Controls.Add(SimulationGroupBox);
             Controls.Add(MainMenuStrip);
@@ -574,8 +565,6 @@
             OperatingModeGroupBox.PerformLayout();
             SimulationGroupBox.ResumeLayout(false);
             SimulationGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)UnitTempNumericUpDown).EndInit();
-            ((System.ComponentModel.ISupportInitialize)RoomTempNumericUpDown).EndInit();
             MainMenuStrip.ResumeLayout(false);
             MainMenuStrip.PerformLayout();
             ResumeLayout(false);
@@ -612,10 +601,7 @@
         private Label HeatStatusLabel;
         private Label CoolStatusLabel;
         private GroupBox SimulationGroupBox;
-        private Label SimulatedTempLabel;
-        private NumericUpDown UnitTempNumericUpDown;
         private CheckBox SimulationCheckBox;
-        private NumericUpDown RoomTempNumericUpDown;
         private CheckBox SafetyCheckBox;
         private CheckBox HeatingCheckBox;
         private CheckBox FanOnlyCheckBox;
@@ -630,5 +616,9 @@
         private ToolStripComboBox PortsStripComboBox;
         private ToolStripMenuItem ConnectMenuItem;
         private ToolStripMenuItem DisconnectMenuItem;
+        private RadioButton SetupCoolingRadioButton;
+        private RadioButton SetupHeatingRadioButton;
+        private System.Windows.Forms.Timer HVACTimer;
+        private System.Windows.Forms.Timer CommunicationTimer;
     }
 }

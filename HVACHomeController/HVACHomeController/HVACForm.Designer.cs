@@ -570,7 +570,7 @@
             Controls.Add(TempDownButton);
             Controls.Add(TempUpButton);
             Name = "HVACForm";
-            Text = "Form1";
+            Text = "HVAC Controller";
             TempDisplayGroupBox.ResumeLayout(false);
             TempDisplayGroupBox.PerformLayout();
             ControlGroupBox.ResumeLayout(false);

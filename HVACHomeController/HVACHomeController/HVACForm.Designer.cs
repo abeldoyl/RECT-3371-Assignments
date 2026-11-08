@@ -76,11 +76,13 @@
             SetupHeatingRadioButton = new RadioButton();
             HVACTimer = new System.Windows.Forms.Timer(components);
             CommunicationTimer = new System.Windows.Forms.Timer(components);
+            LogoPictureBox = new PictureBox();
             TempDisplayGroupBox.SuspendLayout();
             ControlGroupBox.SuspendLayout();
             OperatingModeGroupBox.SuspendLayout();
             SimulationGroupBox.SuspendLayout();
             MainMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)LogoPictureBox).BeginInit();
             SuspendLayout();
             // 
             // TempUpButton
@@ -540,12 +542,24 @@
             SetupHeatingRadioButton.Text = "Setup Heating";
             SetupHeatingRadioButton.UseVisualStyleBackColor = true;
             // 
+            // LogoPictureBox
+            // 
+            LogoPictureBox.Image = Properties.Resources.images;
+            LogoPictureBox.InitialImage = Properties.Resources.images;
+            LogoPictureBox.Location = new Point(698, 279);
+            LogoPictureBox.Name = "LogoPictureBox";
+            LogoPictureBox.Size = new Size(90, 90);
+            LogoPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            LogoPictureBox.TabIndex = 52;
+            LogoPictureBox.TabStop = false;
+            // 
             // HVACForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(230, 231, 232);
             ClientSize = new Size(800, 383);
+            Controls.Add(LogoPictureBox);
             Controls.Add(SetupHeatingRadioButton);
             Controls.Add(SetupCoolingRadioButton);
             Controls.Add(OperatingModeGroupBox);
@@ -567,6 +581,7 @@
             SimulationGroupBox.PerformLayout();
             MainMenuStrip.ResumeLayout(false);
             MainMenuStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)LogoPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -620,5 +635,6 @@
         private RadioButton SetupHeatingRadioButton;
         private System.Windows.Forms.Timer HVACTimer;
         private System.Windows.Forms.Timer CommunicationTimer;
+        private PictureBox LogoPictureBox;
     }
 }
